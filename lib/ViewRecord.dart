@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:list_screen/List.dart';
+import 'package:list_screen/colors.dart';
 import 'package:list_screen/providers/saleRecordProvider.dart';
 import 'package:list_screen/widgets/CustomDatePicker.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +18,7 @@ class ViewRecord extends StatefulWidget {
 class _ViewRecordState extends State<ViewRecord> {
   bool _actionLoading = false;
   Map<String, String> _formData = {};
+  var inputFormat = DateFormat('dd/MM/yyyy');
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   @override
@@ -24,7 +27,7 @@ class _ViewRecordState extends State<ViewRecord> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(22, 4, 5, 255),
+          backgroundColor: kPrimaryColor,
           foregroundColor: Colors.white,
           title: const Text('View Record'),
           actions: [
@@ -148,7 +151,10 @@ class _ViewRecordState extends State<ViewRecord> {
                             borderRadius: BorderRadius.circular(25))),
                   ),
                   Text(
-                    "Date : " + widget.data["date"],
+                    "Date : " + widget.data["date"] != null
+                        ? inputFormat
+                            .format(DateTime.parse(widget.data["date"]))
+                        : "",
                     style: TextStyle(fontSize: 17),
                   )
                 ],

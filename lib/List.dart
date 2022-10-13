@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:list_screen/ViewRecord.dart';
+import 'package:list_screen/colors.dart';
 import 'package:list_screen/providers/saleRecordProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -36,6 +38,8 @@ class _ListScreenState extends State<ListScreen> {
     super.didChangeDependencies();
   }
 
+  var inputFormat = DateFormat('dd/MM/yyyy');
+
   List<DataRow> getRows(data) {
     List<DataRow> rows = [];
     for (var i in data) {
@@ -52,7 +56,9 @@ class _ListScreenState extends State<ListScreen> {
           DataCell(Text(i["price"].toString())),
           DataCell(Text(i["qty"].toString())),
           DataCell(Text(i["total"].toString())),
-          DataCell(Text(i["date"])),
+          DataCell(Text(i["date"] != null
+              ? inputFormat.format(DateTime.parse(i["date"]))
+              : "")),
         ],
       ));
     }
@@ -65,9 +71,9 @@ class _ListScreenState extends State<ListScreen> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            backgroundColor: const Color.fromARGB(21, 1, 1, 34),
+            backgroundColor: kPrimaryColor,
             foregroundColor: Colors.white,
-            title: const Text('Item List'),
+            title: const Text('Records'),
           ),
           body: Consumer<SaleRecordProvider>(
               builder: (context, saleRecordState, child) {

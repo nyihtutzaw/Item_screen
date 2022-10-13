@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:list_screen/List.dart';
+import 'package:list_screen/colors.dart';
 import 'package:list_screen/providers/saleRecordProvider.dart';
 import 'package:list_screen/widgets/CustomDatePicker.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +56,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(22, 4, 5, 255),
+          backgroundColor: kPrimaryColor,
           foregroundColor: Colors.white,
           title: const Text('Add New Item'),
         ),

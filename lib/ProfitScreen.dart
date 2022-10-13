@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:list_screen/ViewRecord.dart';
+import 'package:list_screen/colors.dart';
 import 'package:list_screen/providers/saleRecordProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -63,7 +64,7 @@ class _ProfitScreenState extends State<ProfitScreen> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            backgroundColor: const Color.fromARGB(21, 1, 1, 34),
+            backgroundColor: kPrimaryColor,
             foregroundColor: Colors.white,
             title: const Text('Item List'),
           ),
