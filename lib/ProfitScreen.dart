@@ -5,14 +5,14 @@ import 'package:provider/provider.dart';
 
 import 'Add new screen.dart';
 
-class ListScreen extends StatefulWidget {
-  ListScreen({Key? key}) : super(key: key);
+class ProfitScreen extends StatefulWidget {
+  ProfitScreen({Key? key}) : super(key: key);
 
   @override
-  State<ListScreen> createState() => _ListScreenState();
+  State<ProfitScreen> createState() => _ProfitScreenState();
 }
 
-class _ListScreenState extends State<ListScreen> {
+class _ProfitScreenState extends State<ProfitScreen> {
   bool _isInit = false;
   bool _isPreloading = false;
 
@@ -21,7 +21,7 @@ class _ListScreenState extends State<ListScreen> {
       _isPreloading = true;
     });
 
-    await Provider.of<SaleRecordProvider>(context, listen: false).getAll();
+    await Provider.of<SaleRecordProvider>(context, listen: false).getProfit();
 
     setState(() {
       _isPreloading = false;
@@ -48,11 +48,9 @@ class _ListScreenState extends State<ListScreen> {
           );
         },
         cells: <DataCell>[
-          DataCell(Text(i["product"])),
-          DataCell(Text(i["price"].toString())),
-          DataCell(Text(i["qty"].toString())),
-          DataCell(Text(i["total"].toString())),
-          DataCell(Text(i["date"])),
+          DataCell(Text(i["month"].toString())),
+          DataCell(Text(i["year"].toString())),
+          DataCell(Text(i["profit"].toString())),
         ],
       ));
     }
@@ -77,12 +75,12 @@ class _ListScreenState extends State<ListScreen> {
               return Container(
                   margin: const EdgeInsets.all(8),
                   child: DataTable(
-                    columnSpacing: MediaQuery.of(context).size.width * 0.05,
+                    columnSpacing: MediaQuery.of(context).size.width * 0.2,
                     columns: const <DataColumn>[
                       DataColumn(
                         label: Expanded(
                           child: Text(
-                            'Name',
+                            'Month',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -90,7 +88,7 @@ class _ListScreenState extends State<ListScreen> {
                       DataColumn(
                         label: Expanded(
                           child: Text(
-                            'Qty',
+                            'Year',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -98,29 +96,13 @@ class _ListScreenState extends State<ListScreen> {
                       DataColumn(
                         label: Expanded(
                           child: Text(
-                            'Price',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Text(
-                            'Total',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Text(
-                            'Date',
+                            'Total Profit',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
                     ],
-                    rows: getRows(saleRecordState.data),
+                    rows: getRows(saleRecordState.profit),
                   ));
             }
           })),

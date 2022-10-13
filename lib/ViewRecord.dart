@@ -5,49 +5,18 @@ import 'package:list_screen/providers/saleRecordProvider.dart';
 import 'package:list_screen/widgets/CustomDatePicker.dart';
 import 'package:provider/provider.dart';
 
-class AddNewScreen extends StatefulWidget {
-  AddNewScreen({Key? key}) : super(key: key);
+class ViewRecord extends StatefulWidget {
+  var data;
+  ViewRecord({Key? key, required this.data}) : super(key: key);
 
   @override
-  State<AddNewScreen> createState() => _AddNewScreenState();
+  State<ViewRecord> createState() => _ViewRecordState();
 }
 
-class _AddNewScreenState extends State<AddNewScreen> {
+class _ViewRecordState extends State<ViewRecord> {
   bool _actionLoading = false;
-  String total = "";
   Map<String, String> _formData = {};
   final GlobalKey<FormState> _formKey = GlobalKey();
-
-  Future<void> _submit() async {
-    if (_formKey.currentState != null) {
-      if (_formKey.currentState!.validate()) {
-        _formKey.currentState?.save();
-        try {
-          setState(() {
-            _actionLoading = true;
-          });
-          await Provider.of<SaleRecordProvider>(context, listen: false)
-              .save(_formData);
-          setState(() {
-            _actionLoading = false;
-          });
-          _formKey.currentState!.reset();
-          Fluttertoast.showToast(
-              msg: "Save",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              fontSize: 16.0);
-        } catch (error) {
-          setState(() {
-            _actionLoading = false;
-          });
-        }
-      } else {
-        return;
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +26,23 @@ class _AddNewScreenState extends State<AddNewScreen> {
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(22, 4, 5, 255),
           foregroundColor: Colors.white,
-          title: const Text('Add New Item'),
+          title: const Text('View Record'),
+          actions: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: InkWell(
+                onTap: () async {
+                  await Provider.of<SaleRecordProvider>(context, listen: false)
+                      .delete(widget.data["id"]);
+                  Navigator.of(context).pop();
+                },
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+              ),
+            )
+          ],
         ),
         body: Center(
           child: Form(
@@ -69,12 +54,14 @@ class _AddNewScreenState extends State<AddNewScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   TextFormField(
+                    readOnly: true,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Product is required';
                       }
                       return null;
                     },
+                    initialValue: widget.data["product"],
                     onChanged: (value) => _formData['product'] = value,
                     decoration: InputDecoration(
                         labelText: 'Product',
@@ -82,6 +69,8 @@ class _AddNewScreenState extends State<AddNewScreen> {
                             borderRadius: BorderRadius.circular(25))),
                   ),
                   TextFormField(
+                    readOnly: true,
+                    initialValue: widget.data["price"].toString(),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Price is required';
@@ -89,20 +78,15 @@ class _AddNewScreenState extends State<AddNewScreen> {
                       return null;
                     },
                     keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      _formData['price'] = value;
-                      setState(() => {
-                            total = (int.parse(_formData["price"].toString()) *
-                                    int.parse(_formData["qty"].toString()))
-                                .toString()
-                          });
-                    },
+                    onChanged: (value) => _formData['price'] = value,
                     decoration: InputDecoration(
                         labelText: 'Price',
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25))),
                   ),
                   TextFormField(
+                    initialValue: widget.data["qty"].toString(),
+                    readOnly: true,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Qty is required';
@@ -110,35 +94,32 @@ class _AddNewScreenState extends State<AddNewScreen> {
                       return null;
                     },
                     keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      _formData['qty'] = value;
-                      setState(() => {
-                            total = (int.parse(_formData["price"].toString()) *
-                                    int.parse(_formData["qty"].toString()))
-                                .toString()
-                          });
-                    },
+                    onChanged: (value) => _formData['qty'] = value,
                     decoration: InputDecoration(
                         labelText: 'Qty',
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25))),
                   ),
-                  Container(
-                    alignment: Alignment.bottomLeft,
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Total =",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(total, style: const TextStyle(fontSize: 16))
-                        ]),
+                  TextFormField(
+                    initialValue:
+                        (widget.data["price"] * widget.data["qty"]).toString(),
+                    readOnly: true,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Total is required';
+                      }
+                      return null;
+                    },
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) => _formData['qty'] = value,
+                    decoration: InputDecoration(
+                        labelText: 'Total',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25))),
                   ),
                   TextFormField(
+                    initialValue: widget.data["profit"].toString(),
+                    readOnly: true,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Profit is required';
@@ -152,31 +133,24 @@ class _AddNewScreenState extends State<AddNewScreen> {
                             borderRadius: BorderRadius.circular(25))),
                   ),
                   TextFormField(
+                    initialValue: widget.data["transfer"].toString(),
+                    readOnly: true,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Payment is required';
+                        return 'Transfer is required';
                       }
                       return null;
                     },
                     onChanged: (value) => _formData['transfer'] = value,
                     decoration: InputDecoration(
-                        labelText: 'Payment',
+                        labelText: 'Transfer',
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25))),
                   ),
-                  CustomDatePicker(onChange: (value) {
-                    _formData['date'] = value;
-                  }),
-                  SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: 50,
-                      child: ElevatedButton(
-                          onPressed: () {
-                            if (!_actionLoading) {
-                              _submit();
-                            }
-                          },
-                          child: Text(!_actionLoading ? "Save" : "Saving..")))
+                  Text(
+                    "Date : " + widget.data["date"],
+                    style: TextStyle(fontSize: 17),
+                  )
                 ],
               ),
             ),
